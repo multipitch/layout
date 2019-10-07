@@ -1,0 +1,76 @@
+Steps taken to set up this template project:
+
+0. General setup (do once)
+$ sudo pacman -S git python pyenv python-virtualenv python-virtualenvwrapper
+$ mkdir ~/devel
+$ echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+$ echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+$ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bashrc
+$ echo -e 'export WORKON_HOME=~/.virtualenvs\nexport PROJECT_HOME=~/devel\nsource /usr/bin/virtualenvwrapper.sh' >> ~/.bashrc
+$ curl -sSL \https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+$ echo -e 'for bcfile in ~/.bash_completion.d/* ; do\n  [ -f "$bcfile" ] && . $bcfile\ndone' > ~/.bash_completion
+$ mkdir ~/bash_completion.d
+$ poetry completions bash > ~/bash_completion.d/poetry.bash-completion
+$ echo 'source ~/.bash_completion' >> ~/.bashrc
+$ pacman -S code
+Ensure python add-on is installed in VS Code via its internal package manager
+Add the following settings to VS Code (as a user setting, not a workspace setting)
+    "python.venvPath": "~/.virtualenvs",
+    "git.autofetch": true,
+    "git.enableCommitSigning": true,
+
+1. Install version of python required e.g.
+$ pyenv install 3.7.0    
+
+1. Create project folder and virtual environment
+$ mkdir ~/devel/layout
+$ mkvirtualenv -a ~/devel/layout/ -p ~/.pyenv/versions/3.7.0/bin/python layout
+
+2. Create some files
+$ cd ~/devel/layout
+$ touch README
+$ touch LICENSE
+ - populate with MIT License text
+$ mkdir -p src/layout tests
+$ touch src/layout/__init__.py
+$ echo 'print("hello, world")' > src/layout/hello.py
+
+4. Initialize poetry
+$ poetry init
+ - Description: "Example python package layout."
+ - mostly use defaults
+ - fill in Author
+ - don't define dependencies
+ - License: MIT
+ - confirm generation
+
+5. Install some dev packages
+$ poetry add pylint
+$ poetry add --dev --allow-prereleases black
+
+6. Add settings for black
+$ echo -e '\n[tool.black]\nline-length = 79' >> pyproject.toml
+
+7. Add workspace-specific settings to VS code (~/layout/.code/settings.json)
+$ cd ~/devel/layout
+$ code .
+Edit workspace settings and add the following:
+    "editor.rulers": [
+        72,
+        79,
+        80
+    ],
+    "editor.formatOnSave": true,
+    "python.pythonPath": "~/.virtualenvs/layout/bin/python",
+    "python.formatting.provider": "black",
+
+8. Git setup (assuming user is already using git)
+$ cd ~/devel/layout
+$ curl -LJo .gitignore https://raw.githubusercontent.com/github/gitignore/master/Python.gitignore
+$ curl -u 'multipitch' https://api.github.com/user/repos -d '{"name":"layout"}'
+$ git init
+$ git add .
+$ git commit -m "Initial commit."
+
+
+ 
