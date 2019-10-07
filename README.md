@@ -109,4 +109,4 @@ $ git mv README README.md
 ```
 $ git add README.md
 $ git commit -m "Reformatted README in .md format"
-$ git push
+$ git push --set-upstream origin master
